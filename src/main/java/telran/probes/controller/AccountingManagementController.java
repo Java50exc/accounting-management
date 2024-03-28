@@ -1,8 +1,8 @@
 package telran.probes.controller;
 
 import static telran.probes.api.AccountingValidationErrorMessages.*;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,13 +12,12 @@ import telran.probes.service.AccountingManagementService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class AccountingManagementController {
 	final AccountingManagementService accountService;
 	
 	
 	@PostMapping("${app.accounts.api.path}")
-	AccountDto addAccount(@RequestBody AccountDto account) {
+	AccountDto addAccount(@RequestBody @Valid AccountDto account) {
 		log.debug("Controller: addAccount received {}", account);
 		return accountService.addAccount(account);
 	}
