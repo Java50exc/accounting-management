@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 import telran.probes.dto.AccountDto;
 
-@Document(collection = "${app.accounts.collection.name}")
+@Document(collection = "accounts")
 @Getter
 @ToString
 @AllArgsConstructor
