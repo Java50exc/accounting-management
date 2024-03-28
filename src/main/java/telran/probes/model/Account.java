@@ -8,6 +8,7 @@ import telran.probes.dto.AccountDto;
 @Document(collection = "accounts")
 @Getter
 @ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
