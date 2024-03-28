@@ -18,8 +18,12 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 
 	@Override
 	public AccountDto addAccount(AccountDto account) {
-		Account accountDoc = Account.builder().email(account.email()).hashPassword(account.password())
-				.roles(account.roles()).build();
+		Account accountDoc = Account.builder()
+				.email(account.email())
+				.hashPassword(account.password())
+				.roles(account.roles())
+				.passLength(account.password().length())
+				.build();
 
 		try {
 			mongoTemplate.insert(accountDoc);

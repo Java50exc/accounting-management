@@ -1,8 +1,7 @@
 package telran.probes.model;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import lombok.*;
 import telran.probes.dto.AccountDto;
 
@@ -18,13 +17,16 @@ public class Account {
 	String hashPassword;
 	String[] roles;
 	
+	@Transient
+	Integer passLength;
+	
 	public AccountDto toDto() {
 		return new AccountDto(email, passToAsterisk(hashPassword), roles);
 	}
 	
 	
 	private String passToAsterisk(String hashPassword) {
-		return "*".repeat(hashPassword.length());
+		return "*".repeat(passLength == null ? hashPassword.length() : passLength);
 	}
 
 }
