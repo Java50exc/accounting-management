@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import telran.probes.configuration.SecurityConfiguration;
 import telran.probes.dto.AccountDto;
 import telran.probes.exceptions.*;
 import telran.probes.model.Account;
