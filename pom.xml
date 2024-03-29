@@ -66,10 +66,11 @@
 
 		<!--
 		https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
+
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-			</dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
