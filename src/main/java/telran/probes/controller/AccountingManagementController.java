@@ -23,7 +23,7 @@ public class AccountingManagementController {
 	}
 	
 	@DeleteMapping("${app.accounts.api.path}" + "/{email}")
-	AccountDto removeAccount(@PathVariable("email") @Email(message = WRONG_EMAIL_FORMAT) @NotBlank(message = EMPTY_EMAIL_MSG) String email) {
+	AccountDto removeAccount(@PathVariable("email") @Email(message = WRONG_EMAIL_FORMAT) @NotEmpty(message = EMPTY_EMAIL_MSG) String email) {
 		log.debug("Controller: removeAccount received {}", email);
 		return accountService.removeAccount(email);
 	}

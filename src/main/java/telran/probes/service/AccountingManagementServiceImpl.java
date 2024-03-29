@@ -3,9 +3,11 @@ package telran.probes.service;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import telran.probes.configuration.SecurityConfiguration;
 import telran.probes.dto.AccountDto;
 import telran.probes.exceptions.*;
 import telran.probes.model.Account;
@@ -15,16 +17,17 @@ import telran.probes.model.Account;
 @Slf4j
 public class AccountingManagementServiceImpl implements AccountingManagementService {
 	final MongoTemplate mongoTemplate;
+	final PasswordEncoder passwordEncoder;
 
 	@Override
 	public AccountDto addAccount(AccountDto account) {
 		Account accountDoc = Account.builder()
 				.email(account.email())
-				.hashPassword(account.password())
+				.hashPassword(passwordEncoder.encode(account.password()))
 				.roles(account.roles())
 				.passLength(account.password().length())
 				.build();
-
+		log.debug("Service: addAccount: Account created {} with encoded password", accountDoc);
 		try {
 			mongoTemplate.insert(accountDoc);
 			log.debug("Service: addAccount: Account {} succesfully saved to db", accountDoc);
