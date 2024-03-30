@@ -2,6 +2,7 @@ package telran.probes.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,16 +20,15 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-	SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.cors(customizer -> customizer.disable());
-		httpSecurity.csrf(customizer -> customizer.disable());
-//		httpSecurity.authorizeHttpRequests(customizer -> 
-//		customizer.requestMatchers(HttpMethod.POST).hasRole(null))
-		httpSecurity.authorizeHttpRequests(customizer -> 
-		customizer.anyRequest().hasAnyRole("USER", "ADMIN"));
-		httpSecurity.httpBasic(Customizer.withDefaults());
-
-		return httpSecurity.build();
+	SecurityFilterChain configure(HttpSecurity http) throws Exception {
+		return http.cors(c -> c.disable()).csrf(c -> c.disable())
+				.httpBasic(Customizer.withDefaults())
+				.authorizeHttpRequests(c -> c
+				.requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+				.requestMatchers(HttpMethod.DELETE).hasRole("USER")
+				.requestMatchers(HttpMethod.PUT).authenticated()
+				.anyRequest().permitAll()
+				).build();
 	}
 
 }
