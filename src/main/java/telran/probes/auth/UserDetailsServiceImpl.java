@@ -1,7 +1,6 @@
 package telran.probes.auth;
 
 import java.util.Arrays;
-
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;

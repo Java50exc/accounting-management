@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import telran.probes.dto.AccountDto;
+import telran.probes.dto.PasswordUpdateData;
 import telran.probes.model.Account;
 
 @Component
@@ -47,6 +48,7 @@ public class TestDb {
 	static final AccountDto ACCOUNT_EMPTY_ROLES = new AccountDto(EMAIL1, PASSWORD1, ROLES_EMPTY);
 	static final AccountDto ACCOUNT_NULL_ROLES = new AccountDto(EMAIL1, PASSWORD1, null);
 	static final AccountDto ACCOUNT_ALL_NULL = new AccountDto(null, null, null);
+	static final PasswordUpdateData PASSWORD_UPDATE_DTO = new PasswordUpdateData(EMAIL1, PASSWORD1);
 	
 	static final Account ACCOUNT = Account.builder().email(EMAIL1).hashPassword(PASSWORD1).roles(ROLES1).build();
 	
