@@ -1,8 +1,11 @@
 package telran.probes.service;
 
+
+import static telran.probes.api.ServiceExceptionMessages.*;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.*;
 import org.springframework.data.mongodb.core.query.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -26,31 +29,53 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 				.roles(account.roles())
 				.passLength(account.password().length())
 				.build();
-		log.debug("Service: addAccount: Account created {} with encoded password", accountDoc);
+		log.debug("AccountingManagementServiceImpl: addAccount: Account created {} with encoded password", accountDoc);
 		try {
 			mongoTemplate.insert(accountDoc);
-			log.debug("Service: addAccount: Account {} succesfully saved to db", accountDoc);
+			log.debug("AccountingManagementServiceImpl: addAccount: Account {} succesfully saved to db", accountDoc);
 		} catch (DuplicateKeyException e) {
-			log.error("Service: addAccount: Account with email {} already exists", accountDoc.getEmail());
+			log.error("AccountingManagementServiceImpl: addAccount: Account with email {} already exists", accountDoc.getEmail());
 			throw new AccountIllegalStateException();
 		}
 		AccountDto accountRes = accountDoc.toDto();
-		log.trace("Service: addAccount: returns dto {}", accountRes);
+		log.trace("AccountingManagementServiceImpl: addAccount: returns dto {}", accountRes);
 		return accountRes;
 	}
 
 	@Override
 	public AccountDto removeAccount(String email) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		if (!email.equals(username)) {
+			log.error("AccountingManagementServiceImpl: removeAccount: {} attempts to remove {}", username, email);
+			throw new IllegalArgumentException(REMOVE_ANOTHER_ACCOUNT_PASSWORD);
+		}
 		Account account = mongoTemplate.findAndRemove(new Query(Criteria.where("email").is(email)), Account.class);
 		
 		if (account == null) {
-			log.error("Service: removeAccount: Account with email {} not found", email);
+			log.error("AccountingManagementServiceImpl: removeAccount: Account with email {} not found", email);
 			throw new AccountNotFoundException();
 		}
-		log.debug("Service: removeAccount: Account with email {} has been removed", email);
+		log.debug("AccountingManagementServiceImpl: removeAccount: Account with email {} has been removed", email);
 		AccountDto accountRes = account.toDto();
-		log.trace("Service: removeAccount: returns dto {}", accountRes);
+		log.trace("AccountingManagementServiceImpl: removeAccount: returns dto {}", accountRes);
 		return accountRes;
+	}
+
+	@Override
+	public void updatePassword(String email, String newPassword) throws AccountNotFoundException {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		if (!email.equals(username)) {
+			log.error("AccountingManagementServiceImpl: updatePassword: {} attempts to update {} password", username, email);
+			throw new IllegalArgumentException(UPDATE_ANOTHER_ACCOUNT_PASSWORD);
+		}
+		Update update = new Update();
+		update.push("hashPassword", passwordEncoder.encode(newPassword));
+		Account account = mongoTemplate.findAndModify(new Query(Criteria.where("email").is(email)), update, Account.class);
+		if (account == null) {
+			log.error("AccountingManagementServiceImpl: removeAccount: Account with email {} not found", email);
+			throw new AccountNotFoundException();
+		}
+		log.debug("AccountingManagementServiceImpl: updatePassword: Password of user {} has been updated", email);
 	}
 
 }

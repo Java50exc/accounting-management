@@ -5,5 +5,6 @@ import telran.probes.dto.AccountDto;
 public interface AccountingManagementService {
 	AccountDto addAccount(AccountDto account);
 	AccountDto removeAccount(String email);
+	void updatePassword(String email, String newPassword);
 
 }
