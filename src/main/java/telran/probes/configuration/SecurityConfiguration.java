@@ -27,8 +27,8 @@ public class SecurityConfiguration {
 				.requestMatchers(HttpMethod.POST).hasRole("ADMIN")
 				.requestMatchers(HttpMethod.DELETE).hasRole("USER")
 				.requestMatchers(HttpMethod.PUT).authenticated()
-				.anyRequest().permitAll()
-				).build();
+				.anyRequest().permitAll())
+				.build();
 	}
 
 }
