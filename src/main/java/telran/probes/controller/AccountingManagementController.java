@@ -1,6 +1,9 @@
 package telran.probes.controller;
 
 import static telran.probes.api.AccountingValidationErrorMessages.*;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -34,5 +37,11 @@ public class AccountingManagementController {
 		accountService.updatePassword(accountUpdate.email(), accountUpdate.newPassword());
 		return accountUpdate;
 	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDeniedException(AccessDeniedException e) {
+		return e.getMessage();
+    }
 
 }
