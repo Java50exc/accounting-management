@@ -5,6 +5,7 @@ import static telran.probes.api.ServiceExceptionMessages.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.*;
 import org.springframework.data.mongodb.core.query.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		if (!email.equals(username)) {
 			log.error("AccountingManagementServiceImpl: removeAccount: {} attempts to remove {}", username, email);
-			throw new IllegalArgumentException(REMOVE_ANOTHER_ACCOUNT_PASSWORD);
+			throw new AccessDeniedException(REMOVE_ANOTHER_ACCOUNT_PASSWORD);
 		}
 		Account account = mongoTemplate.findAndRemove(new Query(Criteria.where("email").is(email)), Account.class);
 		
@@ -66,7 +67,7 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		if (!email.equals(username)) {
 			log.error("AccountingManagementServiceImpl: updatePassword: {} attempts to update {} password", username, email);
-			throw new IllegalArgumentException(UPDATE_ANOTHER_ACCOUNT_PASSWORD);
+			throw new AccessDeniedException(UPDATE_ANOTHER_ACCOUNT_PASSWORD);
 		}
 		Update update = new Update();
 		update.set("hashPassword", passwordEncoder.encode(newPassword));
