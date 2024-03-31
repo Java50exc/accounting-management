@@ -43,7 +43,7 @@ public class AccountingManagementSecurityTests {
 	@TestConfiguration
 	class TestConfig {
 		@Bean
-		public UserDetailsService userDetailsService() {
+		UserDetailsService userDetailsService() {
 			return new UserDetailsServiceImpl(accountRepo);
 		}
 	}
