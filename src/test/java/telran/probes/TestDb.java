@@ -48,11 +48,20 @@ public class TestDb {
 	static final AccountDto ACCOUNT_EMPTY_ROLES = new AccountDto(EMAIL1, PASSWORD1, ROLES_EMPTY);
 	static final AccountDto ACCOUNT_NULL_ROLES = new AccountDto(EMAIL1, PASSWORD1, null);
 	static final AccountDto ACCOUNT_ALL_NULL = new AccountDto(null, null, null);
+	
 	static final PasswordUpdateData PASSWORD_UPDATE_DTO = new PasswordUpdateData(EMAIL1, PASSWORD1);
+	static final PasswordUpdateData PASSWORD_UPDATE_WRONG_EMAIL = new PasswordUpdateData(WRONG_EMAIL, PASSWORD1);
+	static final PasswordUpdateData PASSWORD_UPDATE_EMPTY_EMAIL = new PasswordUpdateData(EMPTY_EMAIL, PASSWORD1);
+	static final PasswordUpdateData PASSWORD_UPDATE_SHORT_PASSWORD = new PasswordUpdateData(EMAIL1, SHORT_PASSWORD);
+	static final PasswordUpdateData PASSWORD_UPDATE_WHITESPACES_PASSWORD = new PasswordUpdateData(EMAIL1, PASSWORD_WHITESPACE);
+	static final PasswordUpdateData PASSWORD_UPDATE_EMPTY_PASSWORD = new PasswordUpdateData(EMAIL1, PASSWORD_EMPTY);
+	static final PasswordUpdateData PASSWORD_UPDATE_ALL_NULL = new PasswordUpdateData(null, null);
+	
 	
 	static final Account ACCOUNT = Account.builder().email(EMAIL1).hashPassword(PASSWORD1).roles(ROLES1).build();
 	
 	static final String[] MISSING_MESSAGES = { EMPTY_EMAIL_MSG, EMPTY_PASSWORD, EMPTY_ROLES };
+	static final String[] MISSING_MESSAGES_UPDATE = { EMPTY_EMAIL_MSG, EMPTY_PASSWORD };
 	
 	
 	public void initDb() {
