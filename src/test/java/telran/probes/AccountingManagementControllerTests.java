@@ -1,8 +1,11 @@
 package telran.probes;
 
 import static telran.probes.TestDb.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,15 +15,19 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import telran.probes.dto.PasswordUpdateData;
 import telran.probes.exceptions.*;
 import telran.probes.service.AccountingManagementService;
 
 @WebMvcTest
+@AutoConfigureMockMvc(addFilters = false)
 class AccountingManagementControllerTests {
 	@Value("${app.accounts.api.path}")
 	String ACCOUNTS_PATH;
@@ -44,6 +51,12 @@ class AccountingManagementControllerTests {
 		testValidation(null, mapper.writeValueAsString(ACCOUNT_DTO), delete(PATH + ACCOUNTS_PATH + "/" + EMAIL1),
 				status().isOk());
 	}
+	
+	@Test
+	void updatePassword_correctFlow_success() throws Exception {
+		doNothing().when(accountingService).updatePassword(anyString(), anyString());
+		testValidation(PASSWORD_UPDATE_DTO, mapper.writeValueAsString(PASSWORD_UPDATE_DTO), put(PATH + ACCOUNTS_PATH), status().isOk());
+	}
 
 	// service exception handling
 	@Test
@@ -53,9 +66,27 @@ class AccountingManagementControllerTests {
 	}
 
 	@Test
-	void removeAccount_exceptionThrown_errorMessage() throws Exception {
+	void removeAccount_exceptionNotFoundThrown_errorMessage() throws Exception {
 		when(accountingService.removeAccount(EMAIL1)).thenThrow(new AccountNotFoundException());
 		testValidation(null, ACCOUNT_NOT_FOUND, delete(PATH + ACCOUNTS_PATH + "/" + EMAIL1), status().isNotFound());
+	}
+	
+	@Test
+	void removeAccount_exceptionAccessDeniedThrown_errorMessage() throws Exception {
+		when(accountingService.removeAccount(EMAIL1)).thenThrow(new AccessDeniedException(REMOVE_ANOTHER_ACCOUNT_PASSWORD));
+		testValidation(null, REMOVE_ANOTHER_ACCOUNT_PASSWORD, delete(PATH + ACCOUNTS_PATH + "/" + EMAIL1), status().isForbidden());
+	}
+	
+	@Test
+	void updatePassword_exceptionNotFoundThrown_errorMessage() throws Exception {
+		doThrow(new AccountNotFoundException()).when(accountingService).updatePassword(anyString(), anyString());
+		testValidation(PASSWORD_UPDATE_DTO, ACCOUNT_NOT_FOUND, put(PATH + ACCOUNTS_PATH), status().isNotFound());
+	}
+	
+	@Test
+	void updatePassword_exceptionAccessDeniedThrown_errorMessage() throws Exception {
+		doThrow(new AccessDeniedException(UPDATE_ANOTHER_ACCOUNT_PASSWORD)).when(accountingService).updatePassword(anyString(), anyString());
+		testValidation(PASSWORD_UPDATE_DTO, UPDATE_ANOTHER_ACCOUNT_PASSWORD, put(PATH + ACCOUNTS_PATH), status().isForbidden());
 	}
 
 	// validation tests
