@@ -3,6 +3,7 @@ package telran.probes;
 import static telran.probes.api.AccountingValidationErrorMessages.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import telran.probes.dto.AccountDto;
@@ -13,6 +14,7 @@ import telran.probes.model.Account;
 @RequiredArgsConstructor
 public class TestDb {
 	final MongoTemplate mongoTemplate;
+	final PasswordEncoder passwordEncoder;
 	
 	static final String EMAIL1 = "email1@gmail.com";
 	static final String EMAIL2 = "email2@gmail.com";
@@ -66,7 +68,7 @@ public class TestDb {
 	
 	public void initDb() {
 		mongoTemplate.findAllAndRemove(new Query(), ACCOUNT.getClass());
-		mongoTemplate.insert(ACCOUNT);
+		mongoTemplate.insert(Account.builder().email(EMAIL1).hashPassword(passwordEncoder.encode(PASSWORD1)).roles(ROLES1).build());
 	}
 	
 	public Account findAccount(String email) {

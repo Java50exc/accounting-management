@@ -73,7 +73,7 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 		update.set("hashPassword", passwordEncoder.encode(newPassword));
 		Account account = mongoTemplate.findAndModify(new Query(Criteria.where("email").is(email)), update, Account.class);
 		if (account == null) {
-			log.error("AccountingManagementServiceImpl: removeAccount: Account with email {} not found", email);
+			log.error("AccountingManagementServiceImpl: updatePassword: Account with email {} not found", email);
 			throw new AccountNotFoundException();
 		}
 		log.debug("AccountingManagementServiceImpl: updatePassword: Password of user {} has been updated", email);
