@@ -69,7 +69,7 @@ public class AccountingManagementServiceImpl implements AccountingManagementServ
 			throw new IllegalArgumentException(UPDATE_ANOTHER_ACCOUNT_PASSWORD);
 		}
 		Update update = new Update();
-		update.push("hashPassword", passwordEncoder.encode(newPassword));
+		update.set("hashPassword", passwordEncoder.encode(newPassword));
 		Account account = mongoTemplate.findAndModify(new Query(Criteria.where("email").is(email)), update, Account.class);
 		if (account == null) {
 			log.error("AccountingManagementServiceImpl: removeAccount: Account with email {} not found", email);

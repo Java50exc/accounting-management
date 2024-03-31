@@ -23,5 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return new User(username, account.getHashPassword(), 
 				AuthorityUtils.createAuthorityList(roles));
 	}
+	
+	
 
 }
