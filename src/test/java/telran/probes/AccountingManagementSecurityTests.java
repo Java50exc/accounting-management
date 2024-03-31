@@ -38,7 +38,7 @@ public class AccountingManagementSecurityTests {
 	@MockBean
 	AccountRepository accountRepo;
 	@Autowired
-	UserDetailsService service;
+	UserDetailsService userService;
 
 	@TestConfiguration
 	class TestConfig {
@@ -119,7 +119,7 @@ public class AccountingManagementSecurityTests {
 	@Test
 	void loadUserByUserName_userExists_success() {
 		when(accountRepo.findById(any())).thenReturn(Optional.of(ACCOUNT));
-		UserDetails user = service.loadUserByUsername(EMAIL1);
+		UserDetails user = userService.loadUserByUsername(EMAIL1);
 		assertEquals(ACCOUNT.getEmail(), user.getUsername());
 		assertEquals(ACCOUNT.getHashPassword(), user.getPassword());
 		assertTrue(user.isEnabled());
@@ -128,7 +128,7 @@ public class AccountingManagementSecurityTests {
 	@Test
 	void loadUserByUserName_userNotExists_throwsException() {
 		when(accountRepo.findById(any())).thenReturn(Optional.empty());
-		assertThrowsExactly(UsernameNotFoundException.class, () -> service.loadUserByUsername(EMAIL1));
+		assertThrowsExactly(UsernameNotFoundException.class, () -> userService.loadUserByUsername(EMAIL1));
 	}
 
 }
