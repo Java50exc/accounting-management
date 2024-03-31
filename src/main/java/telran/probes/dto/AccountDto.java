@@ -29,6 +29,13 @@ public record AccountDto(@Email(message = WRONG_EMAIL_FORMAT) @NotBlank(message 
 			return false;
 		AccountDto other = (AccountDto) obj;
 		return Objects.equals(email, other.email) && Arrays.equals(roles, other.roles);
+		
+		
+	}
+
+	@Override
+	public String toString() {
+		return "AccountDto [email=" + email + ", password=" + password + ", roles=" + Arrays.toString(roles) + "]";
 	}
 
 }

@@ -27,4 +27,11 @@ public record PasswordUpdateData(
 		return Objects.equals(email, other.email) && Objects.equals(newPassword, other.newPassword);
 	}
 
+	@Override
+	public String toString() {
+		return "PasswordUpdateData [email=" + email + ", newPassword=" + newPassword + "]";
+	}
+	
+	
+
 }
