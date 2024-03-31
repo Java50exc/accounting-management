@@ -115,7 +115,6 @@ public class AccountingManagementSecurityTests {
 	}
 	
 	
-
 	//UserDetailsService tests
 	@Test
 	void loadUserByUserName_userExists_success() {
