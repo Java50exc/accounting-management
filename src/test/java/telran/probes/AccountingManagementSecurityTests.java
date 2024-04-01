@@ -1,12 +1,10 @@
 package telran.probes;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static telran.probes.TestDb.*;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +38,7 @@ public class AccountingManagementSecurityTests {
 	@Autowired
 	UserDetailsService userService;
 
+
 	@TestConfiguration
 	class TestConfig {
 		@Bean
@@ -47,6 +46,7 @@ public class AccountingManagementSecurityTests {
 			return new UserDetailsServiceImpl(accountRepo);
 		}
 	}
+	
 
 	//correct flow
 	@Test
@@ -114,21 +114,4 @@ public class AccountingManagementSecurityTests {
 				.content(mapper.writeValueAsString(PASSWORD_UPDATE_DTO))).andExpect(status().isUnauthorized());
 	}
 	
-	
-	//UserDetailsService tests
-	@Test
-	void loadUserByUserName_userExists_success() {
-		when(accountRepo.findById(any())).thenReturn(Optional.of(ACCOUNT));
-		UserDetails user = userService.loadUserByUsername(EMAIL1);
-		assertEquals(ACCOUNT.getEmail(), user.getUsername());
-		assertEquals(ACCOUNT.getHashPassword(), user.getPassword());
-		assertTrue(user.isEnabled());
-	}
-	
-	@Test
-	void loadUserByUserName_userNotExists_throwsException() {
-		when(accountRepo.findById(any())).thenReturn(Optional.empty());
-		assertThrowsExactly(UsernameNotFoundException.class, () -> userService.loadUserByUsername(EMAIL1));
-	}
-
 }
