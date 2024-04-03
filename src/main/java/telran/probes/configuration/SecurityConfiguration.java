@@ -24,10 +24,10 @@ public class SecurityConfiguration {
 		return http.cors(c -> c.disable()).csrf(c -> c.disable())
 				.httpBasic(Customizer.withDefaults())
 				.authorizeHttpRequests(c -> c
-				.requestMatchers(HttpMethod.POST).hasRole("ADMIN")
-				.requestMatchers(HttpMethod.DELETE).hasRole("USER")
-				.requestMatchers(HttpMethod.PUT).authenticated()
-				.anyRequest().permitAll())
+						.requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE).hasRole("USER")
+						.requestMatchers(HttpMethod.PUT).authenticated()
+						.anyRequest().permitAll())
 				.build();
 	}
 

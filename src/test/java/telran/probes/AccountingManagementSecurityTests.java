@@ -8,19 +8,15 @@ import static telran.probes.TestDb.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.*;
 import org.springframework.security.test.context.support.*;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import telran.probes.auth.UserDetailsServiceImpl;
 import telran.probes.configuration.SecurityConfiguration;
 import telran.probes.service.AccountingManagementService;
 import telran.probes.dto.*;
-import telran.probes.repo.AccountRepository;
 
 @WebMvcTest
 @Import(SecurityConfiguration.class)
@@ -33,19 +29,8 @@ public class AccountingManagementSecurityTests {
 	ObjectMapper mapper;
 	@MockBean
 	AccountingManagementService accountService;
-	@MockBean
-	AccountRepository accountRepo;
-	@Autowired
-	UserDetailsService userService;
 
 
-	@TestConfiguration
-	class TestConfig {
-		@Bean
-		UserDetailsService userDetailsService() {
-			return new UserDetailsServiceImpl(accountRepo);
-		}
-	}
 	
 
 	//correct flow
